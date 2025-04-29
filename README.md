@@ -17,6 +17,12 @@ This project presents a **gearless robotic arm** developed from scratch as part 
 
 The project is organized into the following directories:
 
+- `/CAD_Models` – SolidWorks design files for the robotic arm  
+- `/FEA_Results` – ANSYS simulation results and analysis  
+- `/Data_Analysis` – Python scripts for analyzing test data  
+- `/Documentation` – Additional technical details and documentation  
+- `/Images` – Visual documentation of the project  
+
 
 
 ---
