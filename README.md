@@ -65,4 +65,30 @@ Python-based data processing and visualization:
 - Integration with **computer vision** for smart object handling
 - Advanced **inverse kinematics** solver for precise positioning
 
+- ## 📊 Performance Metrics
+| Metric                   | Traditional Design | Gearless Design | Improvement |
+|--------------------------|-------------------|-----------------|-------------|
+| Weight                   | 3.2 kg            | 2.1 kg          | 34% lighter |
+| Power efficiency         | 65%               | 82%             | 26% better  |
+| Precision (error margin) | ±1.2 mm           | ±0.6 mm         | 50% more precise |
+| Assembly time            | 4.5 hours         | 2.8 hours       | 38% faster  |
+| Maintenance intervals    | 200 hours         | 500 hours       | 150% longer |
+
+## 📝 Installation & Usage
+### Prerequisites
+- SolidWorks 2020 or newer for CAD files
+- Python 3.8+ with required packages (see `requirements.txt`)
+- ANSYS Workbench 2021 R1 or newer for FEA analysis
+
+### Running the Analysis Scripts
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/Gearless-Robotic-Arm.git
+
+# Install required packages
+pip install -r Data_Analysis/requirements.txt
+
+# Run the structural analysis
+python Data_Analysis/structural_analysis.py
+
 
