@@ -3,7 +3,6 @@
 ## 🚀 Project Overview  
 This project presents a **gearless robotic arm** developed from scratch as part of an academic initiative at **Concordia University, Montreal, QC**. Designed in **SolidWorks** and tested using **ANSYS**, this arm eliminates traditional gears to enhance efficiency and reduce mechanical complexity.
 
-![Gearless Robotic Arm](images/arm_main.png)
 
 ---
 
