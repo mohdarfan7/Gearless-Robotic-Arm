@@ -6,4 +6,4 @@ This folder contains SolidWorks CAD models and design files for the gearless rob
 - Design iterations
 - Assembly files
 - Component designs
-- Simulation configurations
+- Simulation configurations.
