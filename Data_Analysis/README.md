@@ -6,4 +6,4 @@ This folder contains Python scripts and data analysis for structural test result
 - Python analysis scripts
 - Raw test data
 - Processed results
-- Visualization code
+- Visualization code.
