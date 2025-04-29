@@ -25,6 +25,7 @@ The project is organized into the following directories:
 
 
 
+
 ---
 
 ## ⚙️ Technical Details
