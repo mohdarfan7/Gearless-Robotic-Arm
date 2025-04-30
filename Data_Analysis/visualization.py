@@ -2,8 +2,6 @@
 Visualization Module for Gearless Robotic Arm
 Creates advanced visualizations of test data and performance metrics.
 
-Author: [Your Name]
-Created: [Current Date]
 """
 
 import numpy as np
