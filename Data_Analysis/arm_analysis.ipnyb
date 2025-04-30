@@ -1,0 +1,208 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Gearless Robotic Arm Performance Analysis\n",
+    "\n",
+    "This notebook provides interactive analysis of the gearless robotic arm performance data."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Import required libraries\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns\n",
+    "import os\n",
+    "import json\n",
+    "\n",
+    "# Import custom modules\n",
+    "from data_processing import clean_test_data, add_calculated_metrics\n",
+    "from visualization import create_stress_distribution_plot, create_performance_radar_chart\n",
+    "\n",
+    "# Set visualization style\n",
+    "plt.style.use('ggplot')\n",
+    "sns.set_context(\"notebook\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1. Load and Explore Performance Data\n",
+    "\n",
+    "First, let's load the performance data and do some exploratory analysis."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Load performance data\n",
+    "data_file = 'processed_data/sample_performance_data.csv'\n",
+    "\n",
+    "if os.path.exists(data_file):\n",
+    "    performance_data = pd.read_csv(data_file)\n",
+    "else:\n",
+    "    # Generate sample data if file doesn't exist\n",
+    "    from performance_metrics import generate_sample_performance_data\n",
+    "    performance_data = generate_sample_performance_data()\n",
+    "\n",
+    "# Display the first few rows\n",
+    "performance_data.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Get summary statistics\n",
+    "performance_data.describe()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2. Comparison Between Design Types\n",
+    "\n",
+    "Let's compare the key performance metrics between traditional and gearless designs."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Group by design type\n",
+    "design_comparison = performance_data.groupby('design_type').agg({\n",
+    "    'power_consumption': ['mean', 'std'],\n",
+    "    'positioning_error': ['mean', 'std'],\n",
+    "    'temperature': ['mean', 'std'],\n",
+    "    'noise_level': ['mean', 'std'],\n",
+    "    'response_time': ['mean', 'std']\n",
+    "})\n",
+    "\n",
+    "design_comparison"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Calculate improvement percentages\n",
+    "metrics = ['power_consumption', 'positioning_error', 'temperature', 'noise_level', 'response_time']\n",
+    "improvements = {}\n",
+    "\n",
+    "for metric in metrics:\n",
+    "    trad_val = performance_data[performance_data['design_type'] == 'traditional'][metric].mean()\n",
+    "    gearless_val = performance_data[performance_data['design_type'] == 'gearless'][metric].mean()\n",
+    "    improvement = (trad_val - gearless_val) / trad_val * 100\n",
+    "    improvements[metric] = improvement\n",
+    "\n",
+    "# Display improvements\n",
+    "pd.Series(improvements).sort_values(ascending=False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 3. Interactive Visualization"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Create box plots for key metrics\n",
+    "fig, axes = plt.subplots(2, 2, figsize=(15, 12))\n",
+    "\n",
+    "# Positioning Error\n",
+    "sns.boxplot(x='design_type', y='positioning_error', data=performance_data, ax=axes[0,0])\n",
+    "axes[0,0].set_title('Positioning Error')\n",
+    "axes[0,0].set_ylabel('Error (mm)')\n",
+    "\n",
+    "# Power Consumption\n",
+    "sns.boxplot(x='design_type', y='power_consumption', data=performance_data, ax=axes[0,1])\n",
+    "axes[0,1].set_title('Power Consumption')\n",
+    "axes[0,1].set_ylabel('Power (W)')\n",
+    "\n",
+    "# Temperature\n",
+    "sns.boxplot(x='design_type', y='temperature', data=performance_data, ax=axes[1,0])\n",
+    "axes[1,0].set_title('Operating Temperature')\n",
+    "axes[1,0].set_ylabel('Temperature (°C)')\n",
+    "\n",
+    "# Response Time\n",
+    "sns.boxplot(x='design_type', y='response_time', data=performance_data, ax=axes[1,1])\n",
+    "axes[1,1].set_title('Response Time')\n",
+    "axes[1,1].set_ylabel('Time (ms)')\n",
+    "\n",
+    "plt.tight_layout()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 4. Performance by Joint Type"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Analyze performance by joint type\n",
+    "joint_performance = performance_data.groupby(['joint_type', 'design_type']).agg({\n",
+    "    'power_consumption': 'mean',\n",
+    "    'positioning_error': 'mean'\n",
+    "}).reset_index()\n",
+    "\n",
+    "# Pivot for easier visualization\n",
+    "power_pivot = joint_performance.pivot(index='joint_type', columns='design_type', values='power_consumption')\n",
+    "error_pivot = joint_performance.pivot(index='joint_type', columns='design_type', values='positioning_error')\n",
+    "\n",
+    "# Display the pivoted data\n",
+    "print(\"Power Consumption by Joint:\")\n",
+    "display(power_pivot)\n",
+    "\n",
+    "print(\"\\nPositioning Error by Joint:\")\n",
+    "display(error_pivot)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Visualize joint performance\n",
+    "fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))\n",
+    "\n",
+    "# Power consumption by joint\n",
+    "power_pivot.plot(kind='bar', ax=ax1)\n",
+    "ax1.set_title('Power Consumption by Joint')\n",
+    "ax1.set_ylabel('Power (W)')\n",
+    "\n",
+    "# Positioning error by joint\n",
+    "error_pivot.plot(kind='bar', ax=ax2)\n",
+    "ax2.set_title('Positioning Error by Joint'
